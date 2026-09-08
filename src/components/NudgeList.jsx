@@ -3,7 +3,7 @@ import NudgeCard from "./NudgeCard";
 import { getNudgeStatus } from "../utils/dates.js";
 import { useCurrentTime } from "../utils/useCurrentTime.js";
 
-function NudgeList({ nudges, onUpdate, onDelete, onComplete }) {
+function NudgeList({ nudges, onUpdate, onDelete, onComplete, onSnooze }) {
   const now = useCurrentTime();
 
   if (nudges.length === 0) {
@@ -20,6 +20,7 @@ function NudgeList({ nudges, onUpdate, onDelete, onComplete }) {
           onUpdate={onUpdate}
           onDelete={onDelete}
           onComplete={onComplete}
+          onSnooze={onSnooze}
         />
       ))}
     </div>

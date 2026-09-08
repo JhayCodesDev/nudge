@@ -20,3 +20,7 @@ export function getNudgeStatus(nudge, now = new Date()) {
 
   return dueAt.getTime() > now.getTime() ? 'upcoming' : 'overdue'
 }
+
+export function getSnoozeDueAt(minutes, now = new Date()) {
+  return new Date(now.getTime() + minutes * 60 * 1000).toISOString()
+}

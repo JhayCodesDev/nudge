@@ -49,6 +49,22 @@ function App() {
     );
   }
 
+  function handleSnoozeNudge(nudgeId, dueAt) {
+    setNudges((currentNudges) =>
+      currentNudges.map((nudge) => {
+        if (nudge.id !== nudgeId || nudge.completed) {
+          return nudge;
+        }
+
+        return {
+          ...nudge,
+          dueAt,
+          updatedAt: new Date().toISOString(),
+        };
+      }),
+    );
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">
       <section className="w-full max-w-md text-center">
@@ -71,6 +87,7 @@ function App() {
             onUpdate={handleUpdateNudge}
             onDelete={handleDeleteNudge}
             onComplete={handleCompleteNudge}
+            onSnooze={handleSnoozeNudge}
           />
         </section>
       </section>

@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { formatDueAt } from "../utils/dates.js";
+import { formatDueAt, getSnoozeDueAt } from "../utils/dates.js";
 import { NUDGE_PRIORITIES } from "../utils/nudge.js";
+
+const SNOOZE_OPTIONS = [
+  { label: "In 1 hour", minutes: 60 },
+  { label: "Tomorrow", minutes: 24 * 60 },
+  { label: "In 3 days", minutes: 3 * 24 * 60 },
+];
 
 function getLocalDateValue(dateValue) {
   const date = new Date(dateValue);
@@ -15,8 +21,9 @@ function getLocalDateValue(dateValue) {
   };
 }
 
-function NudgeCard({ nudge, status, onUpdate, onDelete, onComplete }) {
+function NudgeCard({ nudge, status, onUpdate, onDelete, onComplete, onSnooze }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSnoozing, setIsSnoozing] = useState(false);
   const [formData, setFormData] = useState({
     title: nudge.title,
     note: nudge.note,
@@ -94,6 +101,11 @@ function NudgeCard({ nudge, status, onUpdate, onDelete, onComplete }) {
     if (confirmed) {
       onDelete(nudge.id);
     }
+  }
+
+  function handleSnooze(minutes) {
+    onSnooze(nudge.id, getSnoozeDueAt(minutes));
+    setIsSnoozing(false);
   }
 
   return (
@@ -306,6 +318,15 @@ function NudgeCard({ nudge, status, onUpdate, onDelete, onComplete }) {
             </button>
             {status !== "completed" && (
               <button
+                className="rounded border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700"
+                type="button"
+                onClick={() => setIsSnoozing((current) => !current)}
+              >
+                {isSnoozing ? "Cancel snooze" : "Snooze"}
+              </button>
+            )}
+            {status !== "completed" && (
+              <button
                 className="rounded bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white"
                 type="button"
                 onClick={() => onComplete(nudge.id)}
@@ -314,6 +335,20 @@ function NudgeCard({ nudge, status, onUpdate, onDelete, onComplete }) {
               </button>
             )}
           </div>
+          {isSnoozing && status !== "completed" && (
+            <div className="mt-3 flex flex-wrap gap-2" aria-label="Snooze options">
+              {SNOOZE_OPTIONS.map((option) => (
+                <button
+                  className="rounded bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700"
+                  key={option.minutes}
+                  type="button"
+                  onClick={() => handleSnooze(option.minutes)}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
         </>
       )}
     </article>
