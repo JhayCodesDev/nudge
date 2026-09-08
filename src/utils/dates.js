@@ -10,3 +10,13 @@ export function formatDueAt(dueAt) {
     timeStyle: 'short',
   }).format(date)
 }
+
+export function getNudgeStatus(nudge, now = new Date()) {
+  if (nudge.completed) {
+    return 'completed'
+  }
+
+  const dueAt = new Date(nudge.dueAt)
+
+  return dueAt.getTime() > now.getTime() ? 'upcoming' : 'overdue'
+}

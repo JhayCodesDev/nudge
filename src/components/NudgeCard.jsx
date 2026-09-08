@@ -15,7 +15,7 @@ function getLocalDateValue(dateValue) {
   };
 }
 
-function NudgeCard({ nudge, onUpdate, onDelete, onComplete }) {
+function NudgeCard({ nudge, status, onUpdate, onDelete, onComplete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     title: nudge.title,
@@ -99,7 +99,7 @@ function NudgeCard({ nudge, onUpdate, onDelete, onComplete }) {
   return (
     <article
       className={`rounded border p-4 text-left shadow-sm ${
-        nudge.completed
+        status === "completed"
           ? "border-emerald-200 bg-emerald-50"
           : "border-slate-200 bg-white"
       }`}
@@ -253,16 +253,22 @@ function NudgeCard({ nudge, onUpdate, onDelete, onComplete }) {
         <>
           <div className="flex items-start justify-between gap-3">
             <h3
-              className={`font-semibold ${nudge.completed ? "text-slate-500 line-through" : "text-slate-900"}`}
+              className={`font-semibold ${status === "completed" ? "text-slate-500 line-through" : "text-slate-900"}`}
             >
               {nudge.title}
             </h3>
             <div className="flex items-center gap-2">
-              {nudge.completed && (
-                <span className="rounded bg-emerald-100 px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-emerald-700">
-                  Completed
-                </span>
-              )}
+              <span
+                className={`rounded px-2 py-1 text-[10px] font-medium uppercase tracking-wide ${
+                  status === "completed"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : status === "overdue"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-blue-100 text-blue-700"
+                }`}
+              >
+                {status}
+              </span>
               <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium capitalize text-slate-700">
                 {nudge.priority}
               </span>
@@ -271,14 +277,14 @@ function NudgeCard({ nudge, onUpdate, onDelete, onComplete }) {
 
           {nudge.note && (
             <p
-              className={`mt-2 text-sm ${nudge.completed ? "text-slate-500 line-through" : "text-slate-600"}`}
+              className={`mt-2 text-sm ${status === "completed" ? "text-slate-500 line-through" : "text-slate-600"}`}
             >
               {nudge.note}
             </p>
           )}
 
           <p
-            className={`mt-3 text-sm ${nudge.completed ? "text-slate-500 line-through" : "text-slate-700"}`}
+            className={`mt-3 text-sm ${status === "completed" ? "text-slate-500 line-through" : "text-slate-700"}`}
           >
             <span className="font-medium">Due:</span> {formatDueAt(nudge.dueAt)}
           </p>
@@ -298,7 +304,7 @@ function NudgeCard({ nudge, onUpdate, onDelete, onComplete }) {
             >
               Delete
             </button>
-            {!nudge.completed && (
+            {status !== "completed" && (
               <button
                 className="rounded bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white"
                 type="button"
