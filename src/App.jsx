@@ -1,6 +1,9 @@
 import { BellRing } from 'lucide-react'
+import { useNudges } from './utils/useNudges'
 
 function App() {
+  useNudges()
+
   return (
     <main className="grid min-h-screen place-items-center bg-slate-50 p-6 text-slate-900">
       <section className="text-center">
